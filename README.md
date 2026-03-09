@@ -2,7 +2,7 @@
 
 > Identifying differentially methylated CpG sites between healthy and diseased individuals using Illumina HumanMethylation450k array data.
 
-**Course:** Bioinformatics / Epigenomics  
+**Course:** DNA/RNA DYNAMICS  
 **Platform:** Illumina HumanMethylation450k Array  
 **Language:** R (Bioconductor)  
 
