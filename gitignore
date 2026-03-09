@@ -1,0 +1,38 @@
+# Raw data (too large for git)
+*.idat
+*.IDAT
+*.csv
+*.xlsx
+*.txt
+SampleSheet*
+samplesheet*
+
+# R outputs
+*.RData
+*.rda
+*.rds
+Rplots.pdf
+
+# Generated plots and figures
+figures/
+plots/
+outputs/
+results/
+*.pdf
+*.png
+*.svg
+*.tiff
+
+# R temporary files
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+*_cache/
+*_files/
