@@ -5,7 +5,6 @@
 **Course:** Bioinformatics / Epigenomics  
 **Platform:** Illumina HumanMethylation450k Array  
 **Language:** R (Bioconductor)  
-**Collaborator:** [Elif Güler](https://github.com/elif-guler) — original analysis and implementation
 
 ---
 
@@ -51,7 +50,7 @@ epigenetic-methylation-450k/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/epigenetic-methylation-450k.git
+git clone https://github.com/MahanBalooei/epigenetic-methylation-450k.git
 cd epigenetic-methylation-450k
 ```
 
@@ -126,10 +125,15 @@ The pipeline produces the following plots:
 
 ## 👥 Contributors
 
-| Name | Role |
+| Name | GitHub |
 |---|---|
-| [Elif Güler](https://github.com/elif-guler) | Original analysis, R implementation, visualization |
-| [Your Name](https://github.com/YOUR_USERNAME) | Collaborator |
+| [Elif Güler](https://github.com/elif-guler) | @elif-guler |
+| [Eyip Sinay Dalmaz](https://github.com/Dalmaz-ES) | @Dalmaz-ES |
+| [Simay Erol](https://github.com/Simay9) | @Simay9 |
+| [Barkin Kemec](https://github.com/mbkemec) | @mbkemec |
+| [Negin Nilforoosh](https://github.com/neginnilforosh) | @neginnilforosh |
+| [Kimia Kanouni](https://github.com/kanounik) | @kanounik |
+| [Mahan Balooei](https://github.com/MahanBalooei) | @MahanBalooei |
 
 ---
 
