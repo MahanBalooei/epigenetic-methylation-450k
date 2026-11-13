@@ -1,60 +1,31 @@
-# 🧬 Epigenetic Analysis: DNA Methylation Patterns (Illumina 450K)
+# Differential DNA Methylation Analysis on Illumina 450K Arrays
 
-> Identifying differentially methylated CpG sites between healthy and diseased individuals using Illumina HumanMethylation450k array data.
+Group assignment for the DNA/RNA Dynamics course, MSc Bioinformatics, University of Bologna.
 
-**Course:** DNA/RNA Dynamics  
-**Platform:** Illumina HumanMethylation450k Array  
-**Language:** R (Bioconductor)  
+`analysis.R` goes from raw Illumina HumanMethylation450K IDAT files to a list of CpG sites that differ between a control group and a disease group, with the usual quality checks and plots along the way. It is written in R with Bioconductor's `minfi`.
 
----
+The dataset was provided by the course: eight samples, labelled `CTRL` or `DIS` in the sample sheet. The raw files are not ours to redistribute, so they are not in this repository, and the script will not run without a comparable dataset of your own.
 
-## 📋 Project Overview
+## What the script does
 
-This project performs a full differential DNA methylation analysis pipeline, from raw IDAT files through quality control, normalization, statistical testing, and visualization. The goal is to detect CpG sites with significant methylation differences between healthy and diseased sample groups.
+1. **Load the data.** Reads the sample sheet and IDAT files into an `RGChannelSet` and extracts the red and green intensity matrices.
+2. **Inspect a single probe.** Looks up one assigned probe address (40796508) and reports its Infinium design type and its intensities in each sample. This was part of the assignment.
+3. **Quality control.** Builds the raw methylation set, draws the methylated-versus-unmethylated median intensity QC plot, and computes detection p-values, flagging positions above 0.05.
+4. **Raw beta and M values.** Compares the density of mean beta and mean M values between the two groups.
+5. **Normalisation.** Applies `preprocessQuantile` and compares raw and normalised data, separately for Infinium I and II probes, in a six-panel figure (density of means, density of standard deviations, boxplots).
+6. **PCA.** Principal component analysis of the normalised beta values, coloured by group, by sex and by Sentrix ID to look for batch effects.
+7. **Differential methylation.** A Welch t-test at each CpG site between the two groups, followed by Benjamini-Hochberg and Bonferroni correction. The script counts how many probes pass at 0.05 before and after each correction.
+8. **Plots.** A volcano plot (difference in mean beta against nominal p-value, highlighting probes with an absolute difference above 0.1 and p below 0.01), a Manhattan plot, and a heatmap with hierarchical clustering on a subset of 100 probes.
 
-### Analysis Pipeline
+## What to keep in mind
 
-```
-Raw IDAT Files
-     ↓
-Sample & Probe Quality Control
-     ↓
-Detection p-value Filtering (threshold: 0.05)
-     ↓
-Quantile Normalization (preprocessQuantile)
-     ↓
-Statistical Testing (t-tests per CpG)
-     ↓
-Correction for Multiple Testing
-     ↓
-Visualization & Reporting
-```
+This is a teaching exercise, and the analysis is deliberately simple.
 
----
+- With four samples per group, a per-probe t-test has very little power, and few or no probes can be expected to survive correction across roughly 450,000 tests. A moderated test such as `limma` would be the standard choice for a real study.
+- Sex and array batch are inspected in the PCA but are not included as covariates. Cell-type composition is not estimated.
+- File paths and group labels are written into the script and match the course dataset. They need editing for other data.
 
-## 📁 Repository Structure
-
-```
-epigenetic-methylation-450k/
-├── analysis.R        # Complete methylation analysis pipeline
-├── .gitignore        # Files to ignore (data, outputs)
-└── README.md         # This file
-```
-
-> **Note:** Raw IDAT files and sample sheets are not included due to file size. Place them in the working directory before running the script.
-
----
-
-## 🚀 Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/MahanBalooei/epigenetic-methylation-450k.git
-cd epigenetic-methylation-450k
-```
-
-### 2. Install R dependencies
+## Running it
 
 ```r
 if (!require("BiocManager", quietly = TRUE))
@@ -69,74 +40,12 @@ BiocManager::install(c(
 install.packages(c("gplots", "qqman"))
 ```
 
-### 3. Prepare your data
+Put the IDAT files and the sample sheet in a folder called `Input_Data`, next to `analysis.R`. The sample sheet needs at least the columns `Group`, `Sex`, `SampleID` and `Sentrix_ID`. The script also expects a cleaned copy of the Illumina 450K manifest (`Illumina450Manifest_clean.RData`), which was provided in the course. Then run the script section by section in RStudio; it was written to be stepped through, not run in one go.
 
-Place your raw IDAT files (or methylation beta matrix) and sample sheet into the working directory. Update file paths and sample group labels in `analysis.R` as needed.
+## Contributors
 
-### 4. Run the analysis
+Elif Güler ([@elif-guler](https://github.com/elif-guler)), Eyip Sinay Dalmaz ([@Dalmaz-ES](https://github.com/Dalmaz-ES)), Simay Erol ([@Simay9](https://github.com/Simay9)), Barkin Kemec ([@mbkemec](https://github.com/mbkemec)), Negin Nilforoosh ([@neginnilforosh](https://github.com/neginnilforosh)), Kimia Kanouni ([@kanounik](https://github.com/kanounik)) and Mahan Balooei ([@MahanBalooei](https://github.com/MahanBalooei)).
 
-Open `analysis.R` in RStudio and run the script, or from the terminal:
+## License
 
-```bash
-Rscript analysis.R
-```
-
----
-
-## 📦 Tools & Packages
-
-| Package | Purpose |
-|---|---|
-| `minfi` | Reading IDAT files, QC, normalization |
-| `IlluminaHumanMethylation450kmanifest` | Array annotation |
-| `gplots` | Heatmap visualization |
-| `qqman` | Manhattan and QQ plots |
-
----
-
-## 📊 Visualizations Generated
-
-The pipeline produces the following plots:
-
-- **Density plots** — Beta and M value distributions (raw vs. normalized)
-- **6-panel QC plot** — Overall sample quality assessment
-- **PCA plots** — Colored by group, sex, and Sentrix ID
-- **Boxplots** — p-value distributions (raw, uncorrected, corrected)
-- **Volcano plot** — Significant CpG sites by effect size and significance
-- **Manhattan plot** — Genome-wide view of differential methylation
-- **Heatmap** — Hierarchical clustering of top differentially methylated probes
-
----
-
-## 🔬 Key Analysis Steps
-
-**Quality Control**
-- Per-sample and per-probe QC using `minfi`
-- Detection p-value filtering at threshold 0.05 to remove unreliable probes
-
-**Normalization**
-- Quantile normalization via `preprocessQuantile` to reduce technical variation between arrays
-
-**Statistical Testing**
-- Pairwise t-tests for each CpG site between healthy and diseased groups
-- Multiple testing correction applied to control false discovery rate
-
----
-
-## 👥 Contributors
-
-| Name | GitHub |
-|---|---|
-| [Elif Güler](https://github.com/elif-guler) | @elif-guler |
-| [Eyip Sinay Dalmaz](https://github.com/Dalmaz-ES) | @Dalmaz-ES |
-| [Simay Erol](https://github.com/Simay9) | @Simay9 |
-| [Barkin Kemec](https://github.com/mbkemec) | @mbkemec |
-| [Negin Nilforoosh](https://github.com/neginnilforosh) | @neginnilforosh |
-| [Kimia Kanouni](https://github.com/kanounik) | @kanounik |
-| [Mahan Balooei](https://github.com/MahanBalooei) | @MahanBalooei |
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+MIT. See `LICENSE`.
